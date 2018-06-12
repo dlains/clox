@@ -1,5 +1,5 @@
-P=cube
-OBJECTS=chunk.o memory.o debug.o value.o error.o array.o vm.o
+P=clox
+OBJECTS=chunk.o memory.o debug.o value.o error.o array.o vm.o scanner.o compiler.o
 CFLAGS=-g -Wall -Werror -O3 -std=gnu11 -I include
 LDLIBS=
 CC=gcc
@@ -11,4 +11,4 @@ $(P): $(OBJECTS)
 
 clean:
 	rm -f *.o
-	rm -f cube
+	rm -f clox

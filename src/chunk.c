@@ -18,15 +18,8 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line)
   {
     int oldCapacity = chunk->capacity;
     chunk->capacity = GROW_CAPACITY(oldCapacity);
-    if(chunk->code)
-      RESIZE(chunk->code, sizeof(uint8_t) * chunk->capacity);
-    else
-      chunk->code   = ALLOC(sizeof(uint8_t) * chunk->capacity);
-
-    if(chunk->lines)
-      RESIZE(chunk->lines, sizeof(int) * chunk->capacity);
-    else
-      chunk->lines  = ALLOC(sizeof(int) * chunk->capacity);
+    chunk->code     = GROW_ARRAY(chunk->code, uint8_t, oldCapacity, chunk->capacity);
+    chunk->lines    = GROW_ARRAY(chunk->lines, int, oldCapacity, chunk->capacity);
   }
 
   chunk->code[chunk->count] = byte;
@@ -36,8 +29,8 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line)
 
 void freeChunk(Chunk *chunk)
 {
-  FREE(chunk->code);
-  FREE(chunk->lines);
+  FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
+  FREE_ARRAY(int, chunk->lines, chunk->capacity);
   freeValueArray(&chunk->constants);
   initChunk(chunk);
 }

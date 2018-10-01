@@ -51,6 +51,7 @@ static void parsePrecedence(Precedence precedence);
 static ParseRule *getRule(TokenType type);
 static void expression();
 static void number();
+static void string();
 static void grouping();
 static void unary();
 static void binary();
@@ -82,7 +83,7 @@ ParseRule rules[] = {
   { NULL,     binary,  PREC_COMPARISON }, // TOKEN_LESS
   { NULL,     binary,  PREC_COMPARISON }, // TOKEN_LESS_EQUAL
   { NULL,     NULL,    PREC_NONE },       // TOKEN_IDENTIFIER
-  { NULL,     NULL,    PREC_NONE },       // TOKEN_STRING
+  { string,   NULL,    PREC_NONE },       // TOKEN_STRING
   { number,   NULL,    PREC_NONE },       // TOKEN_NUMBER
   { NULL,     NULL,    PREC_AND },        // TOKEN_AND
   { NULL,     NULL,    PREC_NONE },       // TOKEN_CLASS
@@ -206,6 +207,10 @@ static ParseRule *getRule(TokenType type)
 static void expression()
 {
   parsePrecedence(PREC_ASSIGNMENT);
+}
+
+static void string() {
+  emitConstant(OBJ_VAL(copyString(parser.previous.start + 1, parser.previous.length - 2)));
 }
 
 static void number()
